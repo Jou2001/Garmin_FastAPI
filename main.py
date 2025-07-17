@@ -113,6 +113,7 @@ async def add_dailies(dailies: dict = Body(...)):
 
 @app.post("/PulseOx")
 async def add_pulseox(pulseox: dict = Body(...)):
+    print("PulseOx data received:", pulseox)
     # Set parameters
     KEYWORD = "pulseox"
     
