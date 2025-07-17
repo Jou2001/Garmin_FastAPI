@@ -22,6 +22,7 @@ TW_TIMEZONE = pytz.timezone("Asia/Taipei")
 
 # * Function for extracting data. Return complete user's data and Garmin User ID.
 def extract_data(raw, KEYWORD):
+    print(f"raw: {raw}")
     details = raw[KEYWORD][0]
     print(f"details: {details}")
     print(f"type: {type(details)}")
