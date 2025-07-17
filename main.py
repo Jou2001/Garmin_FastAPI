@@ -152,3 +152,45 @@ async def add_pulseox(pulseox: dict = Body(...)):
     print("Connection closed!")
 
     return {"result": pulseox}
+
+@app.post("/Stress")
+async def add_stress(stress: dict = Body(...)):
+    print("Stress data received:", stress)
+    # Set parameters
+    KEYWORD = "stress"
+    
+    # Connect to Render DB
+    con = psycopg2.connect(**db_connect_params)
+    cur = con.cursor()
+    print("Connect successfully!")
+
+    # Extract the data
+    details, garmin_user_id = extract_data(stress, KEYWORD)
+
+    # Get today's datetime
+    now = datetime.now(TW_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S.%f")
+
+    # Merge the data
+    data = {**details, "get_data_datetime": now}
+
+    # Convert to json format
+    json_data = json.dumps(data)
+
+    # Insert to DB
+    cur.execute(
+        """
+        INSERT INTO stress (details, garmin_user_id) VALUES (%s, %s)
+    """,
+        (json_data, garmin_user_id),
+    )
+
+    # Commit the changes
+    con.commit()
+    print("Create successfully!")
+
+    # Close the connection
+    cur.close()
+    con.close()
+    print("Connection closed!")
+
+    return {"result": stress}
